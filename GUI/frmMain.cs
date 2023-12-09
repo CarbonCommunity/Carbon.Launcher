@@ -241,12 +241,10 @@ namespace Carbon.Launcher.GUI
 
             Application.Exit();
         }
-
         private void Background_MouseClick(object sender, MouseEventArgs e)
         {
             _mouseLoc = e.Location;
         }
-
         private void Background_MouseMove(object sender, MouseEventArgs e)
         {
 
@@ -255,32 +253,26 @@ namespace Carbon.Launcher.GUI
         {
             SettingsButton.BackColor = Color.FromArgb(40, 87, 123);
         }
-
         private void SettingsButton_MouseLeave(object sender, EventArgs e)
         {
             SettingsButton.BackColor = Color.FromArgb(29, 66, 95);
         }
-
         private void DevblogButton_MouseEnter(object sender, EventArgs e)
         {
             DevblogButton.BackColor = Color.FromArgb(186, 61, 43);
         }
-
         private void DevblogButton_MouseLeave(object sender, EventArgs e)
         {
             DevblogButton.BackColor = Color.FromArgb(150, 47, 32);
         }
-
         private void ExitButton_MouseEnter(object sender, EventArgs e)
         {
-            DevblogButton.BackColor = Color.FromArgb(186, 61, 43);
+            ExitButton.BackColor = Color.FromArgb(186, 61, 43);
         }
-
         private void ExitButton_MouseLeave(object sender, EventArgs e)
         {
-            DevblogButton.BackColor = Color.FromArgb(150, 47, 32);
+	        ExitButton.BackColor = Color.FromArgb(150, 47, 32);
         }
-
         private void SettingsButton_Click(object sender, EventArgs e)
         {
             frmSettings settings = new frmSettings(this);

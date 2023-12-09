@@ -71,10 +71,20 @@ namespace Carbon.Launcher.GUI
             RustFindIcon.BackColor = Color.FromArgb(34, 79, 114);
         }
 
-        private void FindDirectory_MouseLeave(object sender, EventArgs e)
+        private void FindDirectory_MouseHover(object sender, EventArgs e)
         {
-            FindDirectory.BackColor = Color.FromArgb(29, 66, 95);
-            RustFindIcon.BackColor = Color.FromArgb(29, 66, 95);
+	        RustFindIcon.BackColor = Color.FromArgb(34, 79, 114);
+        }
+        private void FindDirectory_MouseLeave_1(object sender, EventArgs e)
+        {
+	        RustFindIcon.Enabled = true;
+
+	        FindDirectory.BackColor = Color.FromArgb(29, 66, 95);
+	        RustFindIcon.BackColor = Color.FromArgb(29, 66, 95);
+        }
+        private void FindDirectory_MouseDown(object sender, MouseEventArgs e)
+        {
+	        RustFindIcon.Enabled = false;
         }
     }
 }
