@@ -271,7 +271,7 @@ namespace Carbon.Launcher.GUI
         }
         private void ExitButton_MouseLeave(object sender, EventArgs e)
         {
-	        ExitButton.BackColor = Color.FromArgb(150, 47, 32);
+            ExitButton.BackColor = Color.FromArgb(150, 47, 32);
         }
         private void SettingsButton_Click(object sender, EventArgs e)
         {

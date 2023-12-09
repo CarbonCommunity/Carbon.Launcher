@@ -45,6 +45,9 @@ namespace Carbon.Launcher.GUI
 		    this.ProgressText = new System.Windows.Forms.Label();
 		    this.DevblogTitle = new System.Windows.Forms.Label();
 		    this.DevblogTitlePanel = new System.Windows.Forms.Panel();
+		    this.button1 = new System.Windows.Forms.Button();
+		    this.button2 = new System.Windows.Forms.Button();
+		    this.label1 = new System.Windows.Forms.Label();
 		    ((System.ComponentModel.ISupportInitialize)(this.Background)).BeginInit();
 		    ((System.ComponentModel.ISupportInitialize)(this.SettingsButton)).BeginInit();
 		    this.DevblogDescriptionPanel.SuspendLayout();
@@ -230,12 +233,59 @@ namespace Carbon.Launcher.GUI
 		    this.DevblogTitlePanel.Size = new System.Drawing.Size(926, 123);
 		    this.DevblogTitlePanel.TabIndex = 20;
 		    // 
+		    // button1
+		    // 
+		    this.button1.BackColor = System.Drawing.Color.YellowGreen;
+		    this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
+		    this.button1.FlatAppearance.BorderSize = 0;
+		    this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+		    this.button1.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+		    this.button1.ForeColor = System.Drawing.Color.White;
+		    this.button1.Location = new System.Drawing.Point(774, 415);
+		    this.button1.Name = "button1";
+		    this.button1.Size = new System.Drawing.Size(30, 33);
+		    this.button1.TabIndex = 23;
+		    this.button1.Text = ">";
+		    this.button1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+		    this.button1.UseVisualStyleBackColor = false;
+		    // 
+		    // button2
+		    // 
+		    this.button2.BackColor = System.Drawing.Color.YellowGreen;
+		    this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
+		    this.button2.FlatAppearance.BorderSize = 0;
+		    this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+		    this.button2.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+		    this.button2.ForeColor = System.Drawing.Color.White;
+		    this.button2.Location = new System.Drawing.Point(700, 415);
+		    this.button2.Name = "button2";
+		    this.button2.Size = new System.Drawing.Size(30, 33);
+		    this.button2.TabIndex = 24;
+		    this.button2.Text = "<";
+		    this.button2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+		    this.button2.UseVisualStyleBackColor = false;
+		    // 
+		    // label1
+		    // 
+		    this.label1.BackColor = System.Drawing.Color.DarkOliveGreen;
+		    this.label1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+		    this.label1.Location = new System.Drawing.Point(730, 415);
+		    this.label1.Name = "label1";
+		    this.label1.Padding = new System.Windows.Forms.Padding(10);
+		    this.label1.Size = new System.Drawing.Size(44, 33);
+		    this.label1.TabIndex = 25;
+		    this.label1.Text = "THURSDAY, JULY 6, 2023";
+		    this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+		    // 
 		    // frmMain
 		    // 
 		    this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 		    this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		    this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(32)))), ((int)(((byte)(31)))));
 		    this.ClientSize = new System.Drawing.Size(926, 530);
+		    this.Controls.Add(this.label1);
+		    this.Controls.Add(this.button2);
+		    this.Controls.Add(this.button1);
 		    this.Controls.Add(this.ProgressBarPanel);
 		    this.Controls.Add(this.DevblogTitlePanel);
 		    this.Controls.Add(this.DevblogDescriptionPanel);
@@ -257,6 +307,9 @@ namespace Carbon.Launcher.GUI
 		    this.DevblogTitlePanel.ResumeLayout(false);
 		    this.ResumeLayout(false);
 	    }
+	    private System.Windows.Forms.Button button1;
+	    private System.Windows.Forms.Button button2;
+	    private System.Windows.Forms.Label label1;
 
         #endregion
         private System.Windows.Forms.PictureBox Background;
