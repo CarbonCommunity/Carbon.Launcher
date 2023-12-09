@@ -47,7 +47,7 @@ namespace Carbon.Launcher.GUI
 		    this.DevblogTitlePanel = new System.Windows.Forms.Panel();
 		    this.button1 = new System.Windows.Forms.Button();
 		    this.button2 = new System.Windows.Forms.Button();
-		    this.label1 = new System.Windows.Forms.Label();
+		    this.newsPagination = new System.Windows.Forms.Label();
 		    ((System.ComponentModel.ISupportInitialize)(this.Background)).BeginInit();
 		    ((System.ComponentModel.ISupportInitialize)(this.SettingsButton)).BeginInit();
 		    this.DevblogDescriptionPanel.SuspendLayout();
@@ -241,7 +241,7 @@ namespace Carbon.Launcher.GUI
 		    this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 		    this.button1.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 		    this.button1.ForeColor = System.Drawing.Color.White;
-		    this.button1.Location = new System.Drawing.Point(774, 415);
+		    this.button1.Location = new System.Drawing.Point(494, 398);
 		    this.button1.Name = "button1";
 		    this.button1.Size = new System.Drawing.Size(30, 33);
 		    this.button1.TabIndex = 23;
@@ -257,7 +257,7 @@ namespace Carbon.Launcher.GUI
 		    this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 		    this.button2.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 		    this.button2.ForeColor = System.Drawing.Color.White;
-		    this.button2.Location = new System.Drawing.Point(700, 415);
+		    this.button2.Location = new System.Drawing.Point(397, 398);
 		    this.button2.Name = "button2";
 		    this.button2.Size = new System.Drawing.Size(30, 33);
 		    this.button2.TabIndex = 24;
@@ -265,17 +265,17 @@ namespace Carbon.Launcher.GUI
 		    this.button2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 		    this.button2.UseVisualStyleBackColor = false;
 		    // 
-		    // label1
+		    // newsPagination
 		    // 
-		    this.label1.BackColor = System.Drawing.Color.DarkOliveGreen;
-		    this.label1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-		    this.label1.Location = new System.Drawing.Point(730, 415);
-		    this.label1.Name = "label1";
-		    this.label1.Padding = new System.Windows.Forms.Padding(10);
-		    this.label1.Size = new System.Drawing.Size(44, 33);
-		    this.label1.TabIndex = 25;
-		    this.label1.Text = "THURSDAY, JULY 6, 2023";
-		    this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+		    this.newsPagination.BackColor = System.Drawing.Color.DarkOliveGreen;
+		    this.newsPagination.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+		    this.newsPagination.Location = new System.Drawing.Point(426, 398);
+		    this.newsPagination.Name = "newsPagination";
+		    this.newsPagination.Padding = new System.Windows.Forms.Padding(10);
+		    this.newsPagination.Size = new System.Drawing.Size(68, 33);
+		    this.newsPagination.TabIndex = 25;
+		    this.newsPagination.Text = "1 / 20";
+		    this.newsPagination.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 		    // 
 		    // frmMain
 		    // 
@@ -283,7 +283,7 @@ namespace Carbon.Launcher.GUI
 		    this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		    this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(32)))), ((int)(((byte)(31)))));
 		    this.ClientSize = new System.Drawing.Size(926, 530);
-		    this.Controls.Add(this.label1);
+		    this.Controls.Add(this.newsPagination);
 		    this.Controls.Add(this.button2);
 		    this.Controls.Add(this.button1);
 		    this.Controls.Add(this.ProgressBarPanel);
@@ -309,7 +309,7 @@ namespace Carbon.Launcher.GUI
 	    }
 	    private System.Windows.Forms.Button button1;
 	    private System.Windows.Forms.Button button2;
-	    private System.Windows.Forms.Label label1;
+	    private System.Windows.Forms.Label newsPagination;
 
         #endregion
         private System.Windows.Forms.PictureBox Background;
