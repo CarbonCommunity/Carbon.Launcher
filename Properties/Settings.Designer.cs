@@ -94,5 +94,17 @@ namespace Carbon.Launcher.Properties {
                 this["DisableGibs"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ConnectIP {
+            get {
+                return ((string)(this["ConnectIP"]));
+            }
+            set {
+                this["ConnectIP"] = value;
+            }
+        }
     }
 }

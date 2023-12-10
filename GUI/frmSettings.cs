@@ -28,6 +28,7 @@ namespace Carbon.Launcher.GUI
             UpdateToggle(Prewarm, (bool)Settings.Default["SkipWarmup"]);
             UpdateToggle(LogFile, (bool)Settings.Default["LogFile"]);
             UpdateToggle(DisableGibs, (bool)Settings.Default["DisableGibs"]);
+            ConnectIP.Text = (string)Settings.Default["ConnectIP"];
         }
 
         private void FindDirectory_Click(object sender, EventArgs e)
@@ -56,6 +57,8 @@ namespace Carbon.Launcher.GUI
 
         private void ExitButton_Click(object sender, EventArgs e)
         {
+            Settings.Default["ConnectIP"] = ConnectIP.Text;
+            Settings.Default.Save();
             Close();
         }
 

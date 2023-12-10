@@ -133,7 +133,10 @@ namespace Carbon.Launcher.GUI
                 startupParams += "-logfile output_log.txt ";
 
             if ((bool)Settings.Default["DisableGibs"])
-                startupParams += "-effects.maxgibs \"-1\" ";
+                startupParams += "+effects.maxgibs \"-1\" ";
+
+            if ((string)Settings.Default["ConnectIP"] != string.Empty)
+                startupParams += $"+connect \"{(string)Settings.Default["ConnectIP"]}\" ";
 
             return startupParams;
         }

@@ -30,6 +30,7 @@ namespace Carbon.Launcher.GUI
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.Background = new System.Windows.Forms.PictureBox();
             this.DevblogDate = new System.Windows.Forms.Label();
@@ -40,6 +41,7 @@ namespace Carbon.Launcher.GUI
             this.ExitButton = new System.Windows.Forms.Button();
             this.PlayButton = new System.Windows.Forms.Button();
             this.ProgressBarPanel = new System.Windows.Forms.Panel();
+            this.ProgressBar = new System.Windows.Forms.ProgressBar();
             this.ProgressPercent = new System.Windows.Forms.Label();
             this.ProgressText = new System.Windows.Forms.Label();
             this.DevblogTitle = new System.Windows.Forms.Label();
@@ -52,7 +54,6 @@ namespace Carbon.Launcher.GUI
             this.VersionNumber = new System.Windows.Forms.Label();
             this.TopPanel = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
-            this.ProgressBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.Background)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SettingsButton)).BeginInit();
             this.DevblogDescriptionPanel.SuspendLayout();
@@ -61,6 +62,10 @@ namespace Carbon.Launcher.GUI
             this.CopyrightPanel.SuspendLayout();
             this.TopPanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // notifyIcon
+            // 
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             // 
             // Background
             // 
@@ -183,6 +188,15 @@ namespace Carbon.Launcher.GUI
             this.ProgressBarPanel.Size = new System.Drawing.Size(523, 57);
             this.ProgressBarPanel.TabIndex = 22;
             this.ProgressBarPanel.Visible = false;
+            // 
+            // ProgressBar
+            // 
+            this.ProgressBar.BackColor = System.Drawing.Color.Black;
+            this.ProgressBar.ForeColor = System.Drawing.Color.White;
+            this.ProgressBar.Location = new System.Drawing.Point(11, 25);
+            this.ProgressBar.Name = "ProgressBar";
+            this.ProgressBar.Size = new System.Drawing.Size(499, 25);
+            this.ProgressBar.TabIndex = 3;
             // 
             // ProgressPercent
             // 
@@ -316,15 +330,6 @@ namespace Carbon.Launcher.GUI
             this.label3.Size = new System.Drawing.Size(152, 17);
             this.label3.TabIndex = 0;
             this.label3.Text = "Carbon Client Launcher";
-            // 
-            // ProgressBar
-            // 
-            this.ProgressBar.BackColor = System.Drawing.Color.Black;
-            this.ProgressBar.ForeColor = System.Drawing.Color.White;
-            this.ProgressBar.Location = new System.Drawing.Point(11, 25);
-            this.ProgressBar.Name = "ProgressBar";
-            this.ProgressBar.Size = new System.Drawing.Size(499, 25);
-            this.ProgressBar.TabIndex = 3;
             // 
             // frmMain
             // 

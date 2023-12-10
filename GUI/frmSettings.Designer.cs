@@ -51,12 +51,18 @@ namespace Carbon.Launcher.GUI
             this.DisableGibs = new System.Windows.Forms.Button();
             this.TopPanel = new System.Windows.Forms.Panel();
             this.TopPanelText = new System.Windows.Forms.Label();
+            this.ConnectPanel = new System.Windows.Forms.Panel();
+            this.ConnectText = new System.Windows.Forms.Label();
+            this.ConnectIP = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.RustFindIcon)).BeginInit();
             this.SilentCrashPanel.SuspendLayout();
             this.PrewarmPanel.SuspendLayout();
             this.LogFilePanel.SuspendLayout();
             this.DisableGibsPanel.SuspendLayout();
             this.TopPanel.SuspendLayout();
+            this.ConnectPanel.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SettingsText
@@ -324,12 +330,56 @@ namespace Carbon.Launcher.GUI
             this.TopPanelText.TabIndex = 0;
             this.TopPanelText.Text = "Carbon Client Launcher";
             // 
+            // ConnectPanel
+            // 
+            this.ConnectPanel.Controls.Add(this.ConnectText);
+            this.ConnectPanel.Controls.Add(this.panel1);
+            this.ConnectPanel.Location = new System.Drawing.Point(41, 355);
+            this.ConnectPanel.Name = "ConnectPanel";
+            this.ConnectPanel.Size = new System.Drawing.Size(295, 58);
+            this.ConnectPanel.TabIndex = 20;
+            // 
+            // ConnectText
+            // 
+            this.ConnectText.Dock = System.Windows.Forms.DockStyle.Top;
+            this.ConnectText.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ConnectText.ForeColor = System.Drawing.Color.White;
+            this.ConnectText.Location = new System.Drawing.Point(0, 0);
+            this.ConnectText.Name = "ConnectText";
+            this.ConnectText.Size = new System.Drawing.Size(295, 33);
+            this.ConnectText.TabIndex = 15;
+            this.ConnectText.Text = "Auto Connect";
+            this.ConnectText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // ConnectIP
+            // 
+            this.ConnectIP.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.ConnectIP.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.ConnectIP.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ConnectIP.ForeColor = System.Drawing.Color.White;
+            this.ConnectIP.Location = new System.Drawing.Point(3, 0);
+            this.ConnectIP.Name = "ConnectIP";
+            this.ConnectIP.Size = new System.Drawing.Size(278, 22);
+            this.ConnectIP.TabIndex = 16;
+            this.ConnectIP.Text = " 127.0.0.1";
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.panel1.Controls.Add(this.ConnectIP);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 36);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(295, 22);
+            this.panel1.TabIndex = 17;
+            // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(32)))), ((int)(((byte)(31)))));
             this.ClientSize = new System.Drawing.Size(926, 530);
+            this.Controls.Add(this.ConnectPanel);
             this.Controls.Add(this.TopPanel);
             this.Controls.Add(this.Underline);
             this.Controls.Add(this.DisableGibsPanel);
@@ -355,6 +405,9 @@ namespace Carbon.Launcher.GUI
             this.DisableGibsPanel.ResumeLayout(false);
             this.TopPanel.ResumeLayout(false);
             this.TopPanel.PerformLayout();
+            this.ConnectPanel.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -384,5 +437,9 @@ namespace Carbon.Launcher.GUI
         private System.Windows.Forms.Button DisableGibs;
         private System.Windows.Forms.Panel TopPanel;
         private System.Windows.Forms.Label TopPanelText;
+        private System.Windows.Forms.Panel ConnectPanel;
+        private System.Windows.Forms.TextBox ConnectIP;
+        private System.Windows.Forms.Label ConnectText;
+        private System.Windows.Forms.Panel panel1;
     }
 }
