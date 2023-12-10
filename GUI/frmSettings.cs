@@ -23,6 +23,11 @@ namespace Carbon.Launcher.GUI
                 RustDirectory.Text = "Not Setup";
             else
                 RustDirectory.Text = rustDirectory;
+
+            UpdateToggle(SilentCrashes, (bool)Settings.Default["SilentCrashes"]);
+            UpdateToggle(Prewarm, (bool)Settings.Default["SkipWarmup"]);
+            UpdateToggle(LogFile, (bool)Settings.Default["LogFile"]);
+            UpdateToggle(DisableGibs, (bool)Settings.Default["DisableGibs"]);
         }
 
         private void FindDirectory_Click(object sender, EventArgs e)
@@ -73,18 +78,62 @@ namespace Carbon.Launcher.GUI
 
         private void FindDirectory_MouseHover(object sender, EventArgs e)
         {
-	        RustFindIcon.BackColor = Color.FromArgb(34, 79, 114);
+            RustFindIcon.BackColor = Color.FromArgb(34, 79, 114);
         }
         private void FindDirectory_MouseLeave_1(object sender, EventArgs e)
         {
-	        RustFindIcon.Enabled = true;
+            RustFindIcon.Enabled = true;
 
-	        FindDirectory.BackColor = Color.FromArgb(29, 66, 95);
-	        RustFindIcon.BackColor = Color.FromArgb(29, 66, 95);
+            FindDirectory.BackColor = Color.FromArgb(29, 66, 95);
+            RustFindIcon.BackColor = Color.FromArgb(29, 66, 95);
         }
         private void FindDirectory_MouseDown(object sender, MouseEventArgs e)
         {
-	        RustFindIcon.Enabled = false;
+            RustFindIcon.Enabled = false;
+        }
+
+        private void UpdateToggle(Button button, bool state)
+        {
+            if (state)
+            {
+                button.ForeColor = Color.FromArgb(166, 205, 99);
+                button.BackColor = Color.FromArgb(61, 75, 39);
+                button.Text = "ON";
+            }
+            else
+            {
+                button.ForeColor = Color.FromArgb(199, 152, 151);
+                button.BackColor = Color.FromArgb(150, 47, 32);
+                button.Text = "OFF";
+            }
+        }
+
+        private void SilentCrashes_Click(object sender, EventArgs e)
+        {
+            Settings.Default["SilentCrashes"] = !(bool)Settings.Default["SilentCrashes"];
+            Settings.Default.Save();
+            UpdateToggle((Button)sender, (bool)Settings.Default["SilentCrashes"]);
+        }
+
+        private void Prewarm_Click(object sender, EventArgs e)
+        {
+            Settings.Default["SkipWarmup"] = !(bool)Settings.Default["SkipWarmup"];
+            Settings.Default.Save();
+            UpdateToggle((Button)sender, (bool)Settings.Default["SkipWarmup"]);
+        }
+
+        private void LogFile_Click(object sender, EventArgs e)
+        {
+            Settings.Default["LogFile"] = !(bool)Settings.Default["LogFile"];
+            Settings.Default.Save();
+            UpdateToggle((Button)sender, (bool)Settings.Default["LogFile"]);
+        }
+
+        private void DisableGibs_Click(object sender, EventArgs e)
+        {
+            Settings.Default["DisableGibs"] = !(bool)Settings.Default["DisableGibs"];
+            Settings.Default.Save();
+            UpdateToggle((Button)sender, (bool)Settings.Default["DisableGibs"]);
         }
     }
 }

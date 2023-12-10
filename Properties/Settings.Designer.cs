@@ -37,13 +37,61 @@ namespace Carbon.Launcher.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int CurrentVersion {
+        [global::System.Configuration.DefaultSettingValueAttribute("v1.0")]
+        public string CurrentVersion {
             get {
-                return ((int)(this["CurrentVersion"]));
+                return ((string)(this["CurrentVersion"]));
             }
             set {
                 this["CurrentVersion"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SkipWarmup {
+            get {
+                return ((bool)(this["SkipWarmup"]));
+            }
+            set {
+                this["SkipWarmup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SilentCrashes {
+            get {
+                return ((bool)(this["SilentCrashes"]));
+            }
+            set {
+                this["SilentCrashes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool LogFile {
+            get {
+                return ((bool)(this["LogFile"]));
+            }
+            set {
+                this["LogFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DisableGibs {
+            get {
+                return ((bool)(this["DisableGibs"]));
+            }
+            set {
+                this["DisableGibs"] = value;
             }
         }
     }

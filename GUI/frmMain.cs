@@ -1,4 +1,5 @@
-﻿using Carbon.Launcher.Properties;
+﻿using AForge.Imaging.Filters;
+using Carbon.Launcher.Properties;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,6 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using AForge.Imaging.Filters;
-using Newtonsoft.Json.Linq;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 
@@ -36,6 +35,14 @@ namespace Carbon.Launcher.GUI
             PlayGame
         }
 
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
         public frmMain()
         {
             InitializeComponent();
@@ -45,9 +52,12 @@ namespace Carbon.Launcher.GUI
             Background.Controls.Add(DevblogTitlePanel);
             Background.Controls.Add(DevblogDescriptionPanel);
             Background.Controls.Add(ProgressBarPanel);
+            Background.Controls.Add(VersionNumber);
+            Background.Controls.Add(CopyrightPanel);
 
             Text = "Carbon Launcher";
             Icon = Resources.icon;
+            VersionNumber.Text = (string)Settings.Default["CurrentVersion"];
 
             rustDirectory = Settings.Default["RustDirectory"].ToString();
             if (string.IsNullOrEmpty(rustDirectory))
@@ -109,6 +119,25 @@ namespace Carbon.Launcher.GUI
                     break;
             }
         }
+
+        private string GetStartupParamaters()
+        {
+            string startupParams = "";
+            if ((bool)Settings.Default["SilentCrashes"])
+                startupParams += "-silent-crashes ";
+
+            if ((bool)Settings.Default["SkipWarmup"])
+                startupParams += "+prewarm \"false\" +global.skipassetwarmup_crashes \"1\" ";
+
+            if ((bool)Settings.Default["LogFile"])
+                startupParams += "-logfile output_log.txt ";
+
+            if ((bool)Settings.Default["DisableGibs"])
+                startupParams += "-effects.maxgibs \"-1\" ";
+
+            return startupParams;
+        }
+
         private void PlayGame(object sender, EventArgs e)
         {
             if (File.Exists($"{rustDirectory}/temp/winhttp.dll"))
@@ -118,7 +147,7 @@ namespace Carbon.Launcher.GUI
             ShowInTaskbar = false;
             notifyIcon.Visible = true;
 
-            using (Process proc = Process.Start($"{rustDirectory}/RustClient.exe", "-logs -silent-crashes"))
+            using (Process proc = Process.Start($"{rustDirectory}/RustClient.exe", GetStartupParamaters()))
             {
                 proc.WaitForExit();
                 WindowState = FormWindowState.Normal;
@@ -216,77 +245,77 @@ namespace Carbon.Launcher.GUI
 
         public void ApplyDevblog(int index)
         {
-	        devblogIndex = index;
+            devblogIndex = index;
 
-	        if (devblogIndex > devblogs.Count() - 1)
-	        {
-		        devblogIndex = 0;
-	        }
-	        else if (devblogIndex < 0)
-	        {
-		        devblogIndex = devblogs.Count() - 1;
-	        }
+            if (devblogIndex > devblogs.Count() - 1)
+            {
+                devblogIndex = 0;
+            }
+            else if (devblogIndex < 0)
+            {
+                devblogIndex = devblogs.Count() - 1;
+            }
 
-	        newsPagination.Text = $"{devblogIndex + 1:n0} / {devblogs.Count():n0}";
+            newsPagination.Text = $"{devblogIndex + 1:n0} / {devblogs.Count():n0}";
 
-	        var description = devblog.description.Split(new[] { "<br/>" }, StringSplitOptions.None);
+            var description = devblog.description.Split(new[] { "<br/>" }, StringSplitOptions.None);
 
-	        DevblogTitle.Text = devblog.title.ToUpper();
-	        DevblogDate.Text = devblog.pubDate.ToUpper();
-	        DevblogDescription.Text = description[1];
+            DevblogTitle.Text = devblog.title.ToUpper();
+            DevblogDate.Text = devblog.pubDate.ToUpper();
+            DevblogDescription.Text = description[1];
 
-	        var url = GetImageInHTMLString(description[0]);
-	        var identifier = Path.GetFileNameWithoutExtension(url);
+            var url = GetImageInHTMLString(description[0]);
+            var identifier = Path.GetFileNameWithoutExtension(url);
 
-	        string GetTempFolder()
-	        {
-		        var temp = "temp";
+            string GetTempFolder()
+            {
+                var temp = "temp";
 
-		        if (!Directory.Exists(temp))
-		        {
-			        Directory.CreateDirectory(temp);
-		        }
+                if (!Directory.Exists(temp))
+                {
+                    Directory.CreateDirectory(temp);
+                }
 
-		        return temp;
-	        }
+                return temp;
+            }
 
-	        if (cachedImages.TryGetValue(identifier, out var image))
-	        {
-		        Background.Image = image;
-	        }
-	        else
-	        {
-		        var cacheFile = Path.Combine(GetTempFolder(), $"{identifier}.dat");
+            if (cachedImages.TryGetValue(identifier, out var image))
+            {
+                Background.Image = image;
+            }
+            else
+            {
+                var cacheFile = Path.Combine(GetTempFolder(), $"{identifier}.dat");
 
-		        if (File.Exists(cacheFile))
-		        {
-			        using var stream = new MemoryStream(File.ReadAllBytes(cacheFile));
-			        Background.Image = cachedImages[identifier] = Bitmap.FromStream(stream);
-		        }
-		        else
-		        {
-			        var client = new WebClient();
-			        client.DownloadDataCompleted += (sender, args) =>
-			        {
-				        Task.Run(() =>
-				        {
-					        using var stream = new MemoryStream(args.Result);
-					        using var originalImage = new Bitmap(stream);
-					        var filter = new GaussianBlur
-					        {
-						        Size = 15
-					        };
+                if (File.Exists(cacheFile))
+                {
+                    using var stream = new MemoryStream(File.ReadAllBytes(cacheFile));
+                    Background.Image = cachedImages[identifier] = Bitmap.FromStream(stream);
+                }
+                else
+                {
+                    var client = new WebClient();
+                    client.DownloadDataCompleted += (sender, args) =>
+                    {
+                        Task.Run(() =>
+                        {
+                            using var stream = new MemoryStream(args.Result);
+                            using var originalImage = new Bitmap(stream);
+                            var filter = new GaussianBlur
+                            {
+                                Size = 15
+                            };
 
-					        var finalImage = filter.Apply(originalImage);
-					        finalImage.Save(cacheFile);
+                            var finalImage = filter.Apply(originalImage);
+                            finalImage.Save(cacheFile);
 
-					        Background.Image = cachedImages[identifier] = finalImage;
-				        });
-			        };
+                            Background.Image = cachedImages[identifier] = finalImage;
+                        });
+                    };
 
-			        client.DownloadDataAsync(new Uri(url));
-		        }
-	        }
+                    client.DownloadDataAsync(new Uri(url));
+                }
+            }
         }
 
         private string GetImageInHTMLString(string htmlString)
@@ -303,10 +332,7 @@ namespace Carbon.Launcher.GUI
 
             Application.Exit();
         }
-        private void Background_MouseMove(object sender, MouseEventArgs e)
-        {
 
-        }
         private void SettingsButton_MouseEnter(object sender, EventArgs e)
         {
             SettingsButton.BackColor = Color.FromArgb(40, 87, 123);
@@ -336,13 +362,23 @@ namespace Carbon.Launcher.GUI
             frmSettings settings = new frmSettings(this);
             settings.ShowDialog();
         }
+
         private void NextNewsClick(object sender, EventArgs e)
         {
-	        ApplyDevblog(devblogIndex + 1);
+            ApplyDevblog(devblogIndex + 1);
         }
         private void PrevNewsClick(object sender, EventArgs e)
         {
-	        ApplyDevblog(devblogIndex - 1);
+            ApplyDevblog(devblogIndex - 1);
+        }
+
+        private void TopPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
         }
     }
 }
