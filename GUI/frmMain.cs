@@ -1,25 +1,32 @@
 ﻿using Carbon.Launcher.Properties;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using AForge.Imaging.Filters;
+using Newtonsoft.Json.Linq;
+using Color = System.Drawing.Color;
+using Image = System.Drawing.Image;
 
 namespace Carbon.Launcher.GUI
 {
     public partial class frmMain : Form
     {
-        private Point _mouseLoc;
-        Item devblog;
         public bool updateAvailable = true;
-        string rustDirectory = string.Empty;
+        public string rustDirectory = string.Empty;
+        public int devblogIndex;
+        public Item devblog => devblogs.ElementAt(devblogIndex);
+        public IEnumerable<Item> devblogs;
+        public Dictionary<string, Image> cachedImages = new();
 
         public enum PlayState
         {
@@ -102,7 +109,6 @@ namespace Carbon.Launcher.GUI
                     break;
             }
         }
-
         private void PlayGame(object sender, EventArgs e)
         {
             if (File.Exists($"{rustDirectory}/temp/winhttp.dll"))
@@ -121,7 +127,6 @@ namespace Carbon.Launcher.GUI
                 File.Move($"{rustDirectory}/winhttp.dll", $"{rustDirectory}/temp/winhttp.dll");
             }
         }
-
         private void UpdateGame(object sender, EventArgs e)
         {
             ProgressBarPanel.Visible = true;
@@ -144,7 +149,6 @@ namespace Carbon.Launcher.GUI
             ProgressPercent.Text = $"{percentage}%";
             ProgressBar.Value = percentage;
         }
-
         void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e) => Unzip();
 
         private async void Unzip()
@@ -204,27 +208,85 @@ namespace Carbon.Launcher.GUI
             string jsonString = JsonConvert.SerializeXNode(xmlDoc);
             Root news = JsonConvert.DeserializeObject<Root>(jsonString);
 
-            devblog = news.rss.channel.item[0];
-            string[] description = devblog.description.Split(new string[] { "<br/>" }, StringSplitOptions.None);
-
-            DevblogTitle.Text = devblog.title.ToUpper();
-            DevblogDate.Text = devblog.pubDate.ToUpper();
-            DevblogDescription.Text = description[1];
+            devblogs = news.rss.channel.item;
             DevblogButton.Click += DevblogButton_Click;
 
-            Background.LoadAsync(GetImageInHTMLString(description[0]));
-            Background.LoadCompleted += Background_BackgroundImageChanged;
+            ApplyDevblog(0);
         }
 
-        private void Background_BackgroundImageChanged(object sender, EventArgs e) => ApplyBlurEffect();
-        private void ApplyBlurEffect()
+        public void ApplyDevblog(int index)
         {
-            Bitmap originalImage = new Bitmap(Background.Image);
-            GaussianBlur filter = new GaussianBlur();
-            filter.Size = 15;
+	        devblogIndex = index;
 
-            Bitmap finalImage = filter.Apply(originalImage);
-            Background.Image = finalImage;
+	        if (devblogIndex > devblogs.Count() - 1)
+	        {
+		        devblogIndex = 0;
+	        }
+	        else if (devblogIndex < 0)
+	        {
+		        devblogIndex = devblogs.Count() - 1;
+	        }
+
+	        newsPagination.Text = $"{devblogIndex + 1:n0} / {devblogs.Count():n0}";
+
+	        var description = devblog.description.Split(new[] { "<br/>" }, StringSplitOptions.None);
+
+	        DevblogTitle.Text = devblog.title.ToUpper();
+	        DevblogDate.Text = devblog.pubDate.ToUpper();
+	        DevblogDescription.Text = description[1];
+
+	        var url = GetImageInHTMLString(description[0]);
+	        var identifier = Path.GetFileNameWithoutExtension(url);
+
+	        string GetTempFolder()
+	        {
+		        var temp = "temp";
+
+		        if (!Directory.Exists(temp))
+		        {
+			        Directory.CreateDirectory(temp);
+		        }
+
+		        return temp;
+	        }
+
+	        if (cachedImages.TryGetValue(identifier, out var image))
+	        {
+		        Background.Image = image;
+	        }
+	        else
+	        {
+		        var cacheFile = Path.Combine(GetTempFolder(), $"{identifier}.dat");
+
+		        if (File.Exists(cacheFile))
+		        {
+			        using var stream = new MemoryStream(File.ReadAllBytes(cacheFile));
+			        Background.Image = cachedImages[identifier] = Bitmap.FromStream(stream);
+		        }
+		        else
+		        {
+			        var client = new WebClient();
+			        client.DownloadDataCompleted += (sender, args) =>
+			        {
+				        Task.Run(() =>
+				        {
+					        using var stream = new MemoryStream(args.Result);
+					        using var originalImage = new Bitmap(stream);
+					        var filter = new GaussianBlur
+					        {
+						        Size = 15
+					        };
+
+					        var finalImage = filter.Apply(originalImage);
+					        finalImage.Save(cacheFile);
+
+					        Background.Image = cachedImages[identifier] = finalImage;
+				        });
+			        };
+
+			        client.DownloadDataAsync(new Uri(url));
+		        }
+	        }
         }
 
         private string GetImageInHTMLString(string htmlString)
@@ -240,10 +302,6 @@ namespace Carbon.Launcher.GUI
                 File.Move($"{rustDirectory}/winhttp.dll", $"{rustDirectory}/temp/winhttp.dll");
 
             Application.Exit();
-        }
-        private void Background_MouseClick(object sender, MouseEventArgs e)
-        {
-            _mouseLoc = e.Location;
         }
         private void Background_MouseMove(object sender, MouseEventArgs e)
         {
@@ -277,6 +335,14 @@ namespace Carbon.Launcher.GUI
         {
             frmSettings settings = new frmSettings(this);
             settings.ShowDialog();
+        }
+        private void NextNewsClick(object sender, EventArgs e)
+        {
+	        ApplyDevblog(devblogIndex + 1);
+        }
+        private void PrevNewsClick(object sender, EventArgs e)
+        {
+	        ApplyDevblog(devblogIndex - 1);
         }
     }
 }

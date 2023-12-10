@@ -48,16 +48,16 @@ namespace Carbon.Launcher.GUI
 		    this.button1 = new System.Windows.Forms.Button();
 		    this.button2 = new System.Windows.Forms.Button();
 		    this.newsPagination = new System.Windows.Forms.Label();
+		    this.label1 = new System.Windows.Forms.Label();
+		    this.panel1 = new System.Windows.Forms.Panel();
+		    this.label2 = new System.Windows.Forms.Label();
 		    ((System.ComponentModel.ISupportInitialize)(this.Background)).BeginInit();
 		    ((System.ComponentModel.ISupportInitialize)(this.SettingsButton)).BeginInit();
 		    this.DevblogDescriptionPanel.SuspendLayout();
 		    this.ProgressBarPanel.SuspendLayout();
 		    this.DevblogTitlePanel.SuspendLayout();
+		    this.panel1.SuspendLayout();
 		    this.SuspendLayout();
-		    // 
-		    // notifyIcon
-		    // 
-		    this.notifyIcon.Text = "Carbon Launcher";
 		    // 
 		    // Background
 		    // 
@@ -68,7 +68,6 @@ namespace Carbon.Launcher.GUI
 		    this.Background.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 		    this.Background.TabIndex = 8;
 		    this.Background.TabStop = false;
-		    this.Background.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Background_MouseClick);
 		    this.Background.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Background_MouseMove);
 		    // 
 		    // DevblogDate
@@ -95,7 +94,7 @@ namespace Carbon.Launcher.GUI
 		    this.DevblogButton.Name = "DevblogButton";
 		    this.DevblogButton.Size = new System.Drawing.Size(131, 33);
 		    this.DevblogButton.TabIndex = 17;
-		    this.DevblogButton.Text = "DEVBLOG";
+		    this.DevblogButton.Text = "READ MORE";
 		    this.DevblogButton.UseVisualStyleBackColor = false;
 		    this.DevblogButton.MouseEnter += new System.EventHandler(this.DevblogButton_MouseEnter);
 		    this.DevblogButton.MouseLeave += new System.EventHandler(this.DevblogButton_MouseLeave);
@@ -135,7 +134,6 @@ namespace Carbon.Launcher.GUI
 		    this.DevblogDescription.Padding = new System.Windows.Forms.Padding(3);
 		    this.DevblogDescription.Size = new System.Drawing.Size(370, 114);
 		    this.DevblogDescription.TabIndex = 0;
-		    this.DevblogDescription.Text = "This month we celebrate Rust\'s 10th birthday. Birthday event, throw back items to" + " Rust Legacy, new weapon, twitch drops, 20 QOL features, and much more!";
 		    this.DevblogDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 		    // 
 		    // ExitButton
@@ -248,6 +246,7 @@ namespace Carbon.Launcher.GUI
 		    this.button1.Text = ">";
 		    this.button1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 		    this.button1.UseVisualStyleBackColor = false;
+		    this.button1.Click += new System.EventHandler(this.NextNewsClick);
 		    // 
 		    // button2
 		    // 
@@ -264,6 +263,7 @@ namespace Carbon.Launcher.GUI
 		    this.button2.Text = "<";
 		    this.button2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 		    this.button2.UseVisualStyleBackColor = false;
+		    this.button2.Click += new System.EventHandler(this.PrevNewsClick);
 		    // 
 		    // newsPagination
 		    // 
@@ -277,12 +277,40 @@ namespace Carbon.Launcher.GUI
 		    this.newsPagination.Text = "1 / 20";
 		    this.newsPagination.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 		    // 
+		    // label1
+		    // 
+		    this.label1.Location = new System.Drawing.Point(3, 2);
+		    this.label1.Name = "label1";
+		    this.label1.Size = new System.Drawing.Size(157, 16);
+		    this.label1.TabIndex = 26;
+		    this.label1.Text = "(c) Carbon Community 2023";
+		    // 
+		    // panel1
+		    // 
+		    this.panel1.BackColor = System.Drawing.Color.Transparent;
+		    this.panel1.Controls.Add(this.label1);
+		    this.panel1.Location = new System.Drawing.Point(786, 512);
+		    this.panel1.Name = "panel1";
+		    this.panel1.Size = new System.Drawing.Size(141, 18);
+		    this.panel1.TabIndex = 27;
+		    // 
+		    // label2
+		    // 
+		    this.label2.Location = new System.Drawing.Point(177, 511);
+		    this.label2.Name = "label2";
+		    this.label2.Size = new System.Drawing.Size(70, 14);
+		    this.label2.TabIndex = 28;
+		    this.label2.Text = "v2023.01.01";
+		    this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+		    // 
 		    // frmMain
 		    // 
 		    this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 		    this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		    this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(32)))), ((int)(((byte)(31)))));
 		    this.ClientSize = new System.Drawing.Size(926, 530);
+		    this.Controls.Add(this.label2);
+		    this.Controls.Add(this.panel1);
 		    this.Controls.Add(this.newsPagination);
 		    this.Controls.Add(this.button2);
 		    this.Controls.Add(this.button1);
@@ -297,16 +325,20 @@ namespace Carbon.Launcher.GUI
 		    this.Controls.Add(this.Background);
 		    this.ForeColor = System.Drawing.Color.White;
 		    this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+		    this.Location = new System.Drawing.Point(15, 15);
 		    this.Name = "frmMain";
-		    this.Text = "frmMain";
 		    ((System.ComponentModel.ISupportInitialize)(this.Background)).EndInit();
 		    ((System.ComponentModel.ISupportInitialize)(this.SettingsButton)).EndInit();
 		    this.DevblogDescriptionPanel.ResumeLayout(false);
 		    this.ProgressBarPanel.ResumeLayout(false);
 		    this.ProgressBarPanel.PerformLayout();
 		    this.DevblogTitlePanel.ResumeLayout(false);
+		    this.panel1.ResumeLayout(false);
 		    this.ResumeLayout(false);
 	    }
+	    private System.Windows.Forms.Label label2;
+	    private System.Windows.Forms.Label label1;
+	    private System.Windows.Forms.Panel panel1;
 	    private System.Windows.Forms.Button button1;
 	    private System.Windows.Forms.Button button2;
 	    private System.Windows.Forms.Label newsPagination;
@@ -322,7 +354,7 @@ namespace Carbon.Launcher.GUI
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.Button PlayButton;
         private System.Windows.Forms.Panel ProgressBarPanel;
-        private CustomControls.CarbonProgressBar ProgressBar;
+        private Carbon.Launcher.GUI.CustomControls.CarbonProgressBar ProgressBar;
         private System.Windows.Forms.Label ProgressPercent;
         private System.Windows.Forms.Label ProgressText;
         private System.Windows.Forms.Label DevblogTitle;
