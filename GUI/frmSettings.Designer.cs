@@ -49,11 +49,14 @@ namespace Carbon.Launcher.GUI
             this.DisableGibsPanel = new System.Windows.Forms.Panel();
             this.DisableGibsText = new System.Windows.Forms.Label();
             this.DisableGibs = new System.Windows.Forms.Button();
+            this.TopPanel = new System.Windows.Forms.Panel();
+            this.TopPanelText = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.RustFindIcon)).BeginInit();
             this.SilentCrashPanel.SuspendLayout();
             this.PrewarmPanel.SuspendLayout();
             this.LogFilePanel.SuspendLayout();
             this.DisableGibsPanel.SuspendLayout();
+            this.TopPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // SettingsText
@@ -61,7 +64,7 @@ namespace Carbon.Launcher.GUI
             this.SettingsText.AutoSize = true;
             this.SettingsText.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SettingsText.ForeColor = System.Drawing.Color.White;
-            this.SettingsText.Location = new System.Drawing.Point(34, 29);
+            this.SettingsText.Location = new System.Drawing.Point(34, 49);
             this.SettingsText.Name = "SettingsText";
             this.SettingsText.Size = new System.Drawing.Size(126, 32);
             this.SettingsText.TabIndex = 0;
@@ -72,7 +75,7 @@ namespace Carbon.Launcher.GUI
             this.RustDirectoryText.AutoSize = true;
             this.RustDirectoryText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RustDirectoryText.ForeColor = System.Drawing.Color.White;
-            this.RustDirectoryText.Location = new System.Drawing.Point(37, 87);
+            this.RustDirectoryText.Location = new System.Drawing.Point(37, 97);
             this.RustDirectoryText.Name = "RustDirectoryText";
             this.RustDirectoryText.Size = new System.Drawing.Size(124, 20);
             this.RustDirectoryText.TabIndex = 1;
@@ -83,7 +86,7 @@ namespace Carbon.Launcher.GUI
             this.RustDirectory.AutoEllipsis = true;
             this.RustDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RustDirectory.ForeColor = System.Drawing.Color.DimGray;
-            this.RustDirectory.Location = new System.Drawing.Point(37, 116);
+            this.RustDirectory.Location = new System.Drawing.Point(37, 126);
             this.RustDirectory.Margin = new System.Windows.Forms.Padding(0);
             this.RustDirectory.Name = "RustDirectory";
             this.RustDirectory.Size = new System.Drawing.Size(321, 21);
@@ -97,7 +100,7 @@ namespace Carbon.Launcher.GUI
             this.FindDirectory.FlatAppearance.BorderSize = 0;
             this.FindDirectory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.FindDirectory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(154)))), ((int)(((byte)(212)))));
-            this.FindDirectory.Location = new System.Drawing.Point(167, 88);
+            this.FindDirectory.Location = new System.Drawing.Point(167, 98);
             this.FindDirectory.Name = "FindDirectory";
             this.FindDirectory.Padding = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.FindDirectory.Size = new System.Drawing.Size(75, 23);
@@ -117,7 +120,7 @@ namespace Carbon.Launcher.GUI
             this.RustFindIcon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.RustFindIcon.Enabled = false;
             this.RustFindIcon.Image = global::Carbon.Launcher.Properties.Resources.search_icon;
-            this.RustFindIcon.Location = new System.Drawing.Point(171, 89);
+            this.RustFindIcon.Location = new System.Drawing.Point(171, 99);
             this.RustFindIcon.Name = "RustFindIcon";
             this.RustFindIcon.Size = new System.Drawing.Size(21, 21);
             this.RustFindIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -175,7 +178,7 @@ namespace Carbon.Launcher.GUI
             // 
             this.SilentCrashPanel.Controls.Add(this.SilentCrashText);
             this.SilentCrashPanel.Controls.Add(this.SilentCrashes);
-            this.SilentCrashPanel.Location = new System.Drawing.Point(40, 165);
+            this.SilentCrashPanel.Location = new System.Drawing.Point(40, 175);
             this.SilentCrashPanel.Name = "SilentCrashPanel";
             this.SilentCrashPanel.Size = new System.Drawing.Size(295, 33);
             this.SilentCrashPanel.TabIndex = 17;
@@ -184,7 +187,7 @@ namespace Carbon.Launcher.GUI
             // 
             this.PrewarmPanel.Controls.Add(this.PrewarmText);
             this.PrewarmPanel.Controls.Add(this.Prewarm);
-            this.PrewarmPanel.Location = new System.Drawing.Point(40, 204);
+            this.PrewarmPanel.Location = new System.Drawing.Point(40, 214);
             this.PrewarmPanel.Name = "PrewarmPanel";
             this.PrewarmPanel.Size = new System.Drawing.Size(295, 33);
             this.PrewarmPanel.TabIndex = 18;
@@ -221,7 +224,7 @@ namespace Carbon.Launcher.GUI
             // Underline
             // 
             this.Underline.BackColor = System.Drawing.Color.White;
-            this.Underline.Location = new System.Drawing.Point(40, 64);
+            this.Underline.Location = new System.Drawing.Point(40, 84);
             this.Underline.Name = "Underline";
             this.Underline.Size = new System.Drawing.Size(171, 2);
             this.Underline.TabIndex = 19;
@@ -230,7 +233,7 @@ namespace Carbon.Launcher.GUI
             // 
             this.LogFilePanel.Controls.Add(this.LogFileText);
             this.LogFilePanel.Controls.Add(this.LogFile);
-            this.LogFilePanel.Location = new System.Drawing.Point(41, 243);
+            this.LogFilePanel.Location = new System.Drawing.Point(41, 253);
             this.LogFilePanel.Name = "LogFilePanel";
             this.LogFilePanel.Size = new System.Drawing.Size(295, 33);
             this.LogFilePanel.TabIndex = 19;
@@ -268,7 +271,7 @@ namespace Carbon.Launcher.GUI
             // 
             this.DisableGibsPanel.Controls.Add(this.DisableGibsText);
             this.DisableGibsPanel.Controls.Add(this.DisableGibs);
-            this.DisableGibsPanel.Location = new System.Drawing.Point(41, 282);
+            this.DisableGibsPanel.Location = new System.Drawing.Point(41, 292);
             this.DisableGibsPanel.Name = "DisableGibsPanel";
             this.DisableGibsPanel.Size = new System.Drawing.Size(295, 33);
             this.DisableGibsPanel.TabIndex = 19;
@@ -302,12 +305,32 @@ namespace Carbon.Launcher.GUI
             this.DisableGibs.UseVisualStyleBackColor = false;
             this.DisableGibs.Click += new System.EventHandler(this.DisableGibs_Click);
             // 
+            // TopPanel
+            // 
+            this.TopPanel.Controls.Add(this.TopPanelText);
+            this.TopPanel.Location = new System.Drawing.Point(0, 0);
+            this.TopPanel.Name = "TopPanel";
+            this.TopPanel.Size = new System.Drawing.Size(899, 30);
+            this.TopPanel.TabIndex = 20;
+            // 
+            // TopPanelText
+            // 
+            this.TopPanelText.AutoSize = true;
+            this.TopPanelText.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.TopPanelText.ForeColor = System.Drawing.Color.White;
+            this.TopPanelText.Location = new System.Drawing.Point(11, 8);
+            this.TopPanelText.Name = "TopPanelText";
+            this.TopPanelText.Size = new System.Drawing.Size(152, 17);
+            this.TopPanelText.TabIndex = 0;
+            this.TopPanelText.Text = "Carbon Client Launcher";
+            // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(32)))), ((int)(((byte)(31)))));
             this.ClientSize = new System.Drawing.Size(926, 530);
+            this.Controls.Add(this.TopPanel);
             this.Controls.Add(this.Underline);
             this.Controls.Add(this.DisableGibsPanel);
             this.Controls.Add(this.LogFilePanel);
@@ -330,6 +353,8 @@ namespace Carbon.Launcher.GUI
             this.PrewarmPanel.ResumeLayout(false);
             this.LogFilePanel.ResumeLayout(false);
             this.DisableGibsPanel.ResumeLayout(false);
+            this.TopPanel.ResumeLayout(false);
+            this.TopPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -357,5 +382,7 @@ namespace Carbon.Launcher.GUI
         private System.Windows.Forms.Panel DisableGibsPanel;
         private System.Windows.Forms.Label DisableGibsText;
         private System.Windows.Forms.Button DisableGibs;
+        private System.Windows.Forms.Panel TopPanel;
+        private System.Windows.Forms.Label TopPanelText;
     }
 }
