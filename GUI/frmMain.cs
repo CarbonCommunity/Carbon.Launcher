@@ -165,10 +165,10 @@ namespace Carbon.Launcher.GUI
             PlayButton.Enabled = false;
             using (WebClient client = new WebClient())
             {
-                Uri uri = new Uri("https://cdn.discordapp.com/attachments/1153935427464601610/1182104524920459485/Carbon.Client.zip?ex=65837ba1&is=657106a1&hm=e5b3b63fbe1fa4ac86179417247fa3c93a67fbfbf67a9a03b2bf9976b7276ec1&");
+                Uri uri = new Uri("https://github.com/CarbonCommunity/Carbon/releases/download/client_build/Carbon.Client.Release.zip");
                 client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressChanged);
                 client.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFileCompleted);
-                client.DownloadFileAsync(uri, $"{rustDirectory}/Carbon.Client.zip");
+                client.DownloadFileAsync(uri, $"{rustDirectory}/Carbon.Client.Release.zip");
             }
         }
 
@@ -177,7 +177,7 @@ namespace Carbon.Launcher.GUI
             double bytesIn = double.Parse(e.BytesReceived.ToString());
             double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
             int percentage = Convert.ToInt32(bytesIn / totalBytes * 100);
-            ProgressText.Text = "Downloading Carbon.Client.zip";
+            ProgressText.Text = "Downloading Carbon.Client.Release.zip";
             ProgressPercent.Text = $"{percentage}%";
             ProgressBar.Value = percentage;
         }
@@ -186,7 +186,7 @@ namespace Carbon.Launcher.GUI
         private async void Unzip()
         {
             var filesExtracted = 0;
-            string zipLocation = $@"{rustDirectory}\Carbon.Client.zip";
+            string zipLocation = $@"{rustDirectory}\Carbon.Client.Release.zip";
             using (ZipArchive archive = await Task.Run(() => ZipFile.OpenRead(zipLocation)))
             {
                 int progress = 0;
