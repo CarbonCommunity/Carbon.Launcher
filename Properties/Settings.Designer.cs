@@ -37,18 +37,6 @@ namespace Carbon.Launcher.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("v1.0")]
-        public string CurrentVersion {
-            get {
-                return ((string)(this["CurrentVersion"]));
-            }
-            set {
-                this["CurrentVersion"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool SkipWarmup {
             get {

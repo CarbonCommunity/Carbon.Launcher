@@ -20,7 +20,8 @@ namespace Carbon.Launcher.GUI
 {
     public partial class frmMain : Form
     {
-        public bool updateAvailable = true;
+        public bool updateAvailable = false;
+        public string currentVersion = string.Empty;
         public string rustDirectory = string.Empty;
         public int devblogIndex;
         public Item devblog => devblogs.ElementAt(devblogIndex);
@@ -33,6 +34,15 @@ namespace Carbon.Launcher.GUI
             WrongDir,
             UpdateGame,
             PlayGame
+        }
+
+        public class CarbonBuild
+        {
+            public string name { get; set; }
+            public string version { get; set; }
+            public string protocol { get; set; }
+            public DateTime date { get; set; }
+            public bool prerelease { get; set; }
         }
 
         public const int WM_NCLBUTTONDOWN = 0xA1;
@@ -57,7 +67,6 @@ namespace Carbon.Launcher.GUI
 
             Text = "Carbon Launcher";
             Icon = Resources.icon;
-            VersionNumber.Text = (string)Settings.Default["CurrentVersion"];
 
             rustDirectory = Settings.Default["RustDirectory"].ToString();
             if (string.IsNullOrEmpty(rustDirectory))
@@ -66,6 +75,29 @@ namespace Carbon.Launcher.GUI
             {
                 if (IsRustDir(rustDirectory))
                 {
+                    string clientDll = Path.Combine(rustDirectory, "BepInEx", "plugins", "CarbonCommunity.Client.dll");
+                    if (File.Exists(clientDll))
+                    {
+                        currentVersion = FileVersionInfo.GetVersionInfo(clientDll).FileVersion;
+
+                        using (WebClient webClient = new WebClient())
+                        {
+                            string json = webClient.DownloadString("https://carbonmod.gg/api/");
+                            List<CarbonBuild> data = JsonConvert.DeserializeObject<List<CarbonBuild>>(json);
+
+                            foreach (CarbonBuild build in data)
+                            {
+                                if (build.name != "client_build") continue;
+                                if (build.version != currentVersion)
+                                    updateAvailable = true;
+                                else
+                                    updateAvailable = false;
+                            }
+                        }
+                    }
+                    else
+                        updateAvailable = true;
+
                     if (updateAvailable)
                         UpdatePlayButton(PlayState.UpdateGame);
                     else
@@ -74,6 +106,8 @@ namespace Carbon.Launcher.GUI
                 else
                     UpdatePlayButton(PlayState.WrongDir);
             }
+
+            VersionNumber.Text = $"v{currentVersion}";
         }
 
         public bool IsRustDir(string dir)

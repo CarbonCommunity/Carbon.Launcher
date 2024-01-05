@@ -305,9 +305,9 @@ namespace Carbon.Launcher.GUI
             // VersionNumber
             // 
             this.VersionNumber.BackColor = System.Drawing.Color.Transparent;
-            this.VersionNumber.Location = new System.Drawing.Point(854, 497);
+            this.VersionNumber.Location = new System.Drawing.Point(822, 497);
             this.VersionNumber.Name = "VersionNumber";
-            this.VersionNumber.Size = new System.Drawing.Size(70, 14);
+            this.VersionNumber.Size = new System.Drawing.Size(102, 14);
             this.VersionNumber.TabIndex = 28;
             this.VersionNumber.Text = "v2023.01.01";
             this.VersionNumber.TextAlign = System.Drawing.ContentAlignment.TopRight;
