@@ -22,8 +22,10 @@ namespace Carbon.Launcher.GUI
     public partial class frmMain : Form
     {
         public bool updateAvailable = false;
+        public bool launchVanilla = false;
         public string currentVersion = string.Empty;
         public string rustDirectory = string.Empty;
+
         public int devblogIndex;
         public Item devblog => devblogs.ElementAt(devblogIndex);
         public IEnumerable<Item> devblogs;
@@ -33,6 +35,7 @@ namespace Carbon.Launcher.GUI
 
         public enum PlayState
         {
+            SteamNotRunning,
             NotSetup,
             WrongDir,
             UpdateGame,
@@ -70,95 +73,66 @@ namespace Carbon.Launcher.GUI
 
             Text = "Carbon Launcher";
             Icon = Resources.icon;
+            ToggleRustCarbonBtn(false);
 
+            Process[] steamProcesses = Process.GetProcessesByName("steam");
+            if (steamProcesses.Length == 0)
+                UpdatePlayButton(PlayState.SteamNotRunning);
+            else
+                RustDirectoryCheck();
+        }
+
+        public void CheckIfSteamOpen(object sender, EventArgs e)
+        {
+            Process[] steamProcesses = Process.GetProcessesByName("steam");
+            if (steamProcesses.Length > 0)
+                RustDirectoryCheck();
+        }
+
+        public void RustDirectoryCheck()
+        {
             rustDirectory = Settings.Default["RustDirectory"].ToString();
             if (string.IsNullOrEmpty(rustDirectory))
                 UpdatePlayButton(PlayState.NotSetup);
             else
             {
                 if (IsRustDir(rustDirectory))
-                {
-                    string clientDll = Path.Combine(rustDirectory, "BepInEx", "plugins", "CarbonCommunity.Client.dll");
-                    if (File.Exists(clientDll))
-                    {
-                        currentVersion = FileVersionInfo.GetVersionInfo(clientDll).FileVersion;
-
-                        using (WebClient webClient = new WebClient())
-                        {
-                            string json = webClient.DownloadString("https://carbonmod.gg/api/");
-                            List<CarbonBuild> data = JsonConvert.DeserializeObject<List<CarbonBuild>>(json);
-
-                            foreach (CarbonBuild build in data)
-                            {
-                                if (build.name != "client_build") continue;
-                                if (build.version != currentVersion)
-                                    updateAvailable = true;
-                                else
-                                    updateAvailable = false;
-                            }
-                        }
-                    }
-                    else
-                        updateAvailable = true;
-
-                    if (updateAvailable)
-                        UpdatePlayButton(PlayState.UpdateGame);
-                    else
-                        UpdatePlayButton(PlayState.PlayGame);
-                }
+                    CheckForCarbonUpdate();
                 else
                     UpdatePlayButton(PlayState.WrongDir);
             }
+        }
 
-            VersionNumber.Text = $"v{currentVersion}";
-
-            ToggleRustCarbonBtn(false);
-
-            Steam.Init();
-
-            var items = new string[]
+        public void CheckForCarbonUpdate()
+        {
+            string clientDll = Path.Combine(rustDirectory, "BepInEx", "plugins", "CarbonCommunity.Client.dll");
+            if (File.Exists(clientDll))
             {
-	            string.Empty,
-	            @"Downloading server information"
-            };
+                currentVersion = FileVersionInfo.GetVersionInfo(clientDll).FileVersion;
+                VersionNumber.Text = $"v{currentVersion}";
 
-            browserList.Items.Clear();
-            browserList.Items.Add(new ListViewItem(items));
+                using (WebClient webClient = new WebClient())
+                {
+                    string json = webClient.DownloadString("https://carbonmod.gg/api/");
+                    List<CarbonBuild> data = JsonConvert.DeserializeObject<List<CarbonBuild>>(json);
 
-            Steam.RefreshInfo(null, () =>
-            {
-	            RefreshBrowserList(browserList.Text);
-            });
-
-            browserSearchTxt.TextChanged += (sender, args) =>
-            {
-	            RefreshBrowserList(browserSearchTxt.Text);
-            };
-
-            void RefreshBrowserList(string filter)
-            {
-	            filter = filter.ToLower().Trim();
-
-	            browserList.Items.Clear();
-
-	            foreach (var info in Steam.Cache.OrderByDescending(x => x.Players))
-	            {
-		            if (!string.IsNullOrEmpty(filter) && !(info.Name.ToLower().Contains(filter)))
-		            {
-						continue;
-		            }
-
-		            var items = new string[]
-		            {
-			            string.Empty,
-			            $"{info.Name}",
-			            $"{info.Players:n0} / {info.MaxPlayers:n0}",
-			            $"{info.Ping:0}ms"
-		            };
-
-		            browserList.Items.Add(new ListViewItem(items));
-	            }
+                    foreach (CarbonBuild build in data)
+                    {
+                        if (build.name != "client_build") continue;
+                        if (build.version != currentVersion)
+                            updateAvailable = true;
+                        else
+                            updateAvailable = false;
+                    }
+                }
             }
+            else
+                updateAvailable = true;
+
+            if (updateAvailable)
+                UpdatePlayButton(PlayState.UpdateGame);
+            else
+                UpdatePlayButton(PlayState.PlayGame);
         }
 
         public bool IsRustDir(string dir)
@@ -173,17 +147,25 @@ namespace Carbon.Launcher.GUI
         {
             switch (state)
             {
+                case PlayState.SteamNotRunning:
+                    PlayButton.ForeColor = Color.FromArgb(199, 152, 151);
+                    PlayButton.BackColor = Color.FromArgb(150, 47, 32);
+                    PlayButton.Text = "CHECK STEAM";
+                    PlayButton.Enabled = true;
+                    PlayButton.Click += CheckIfSteamOpen;
+                    break;
+
                 case PlayState.NotSetup:
                     PlayButton.ForeColor = Color.FromArgb(199, 152, 151);
                     PlayButton.BackColor = Color.FromArgb(150, 47, 32);
-                    PlayButton.Text = "DIRECTORY NOT SETUP";
+                    PlayButton.Text = "SETUP DIR";
                     PlayButton.Enabled = false;
                     break;
 
                 case PlayState.WrongDir:
                     PlayButton.ForeColor = Color.FromArgb(199, 152, 151);
                     PlayButton.BackColor = Color.FromArgb(150, 47, 32);
-                    PlayButton.Text = "WRONG DIRECTORY";
+                    PlayButton.Text = "WRONG DIR";
                     PlayButton.Enabled = false;
                     break;
 
@@ -218,34 +200,41 @@ namespace Carbon.Launcher.GUI
                 startupParams += "+effects.maxgibs \"-1\" ";
 
             var ip = (!string.IsNullOrEmpty(SelectedServer.Name)
-	            ? $"{SelectedServer.Address}:{SelectedServer.ConnectionPort}"
-	            : Settings.Default["ConnectIP"])?.ToString();
+                ? $"{SelectedServer.Address}:{SelectedServer.ConnectionPort}"
+                : Settings.Default["ConnectIP"])?.ToString();
 
             if (!string.IsNullOrEmpty(ip))
                 startupParams += $"+connect \"{ip}\" ";
 
             if ((bool)Settings.Default["LogFile"])
-	            startupParams += "-logfile output_log.txt ";
+                startupParams += "-logfile output_log.txt ";
 
             return startupParams;
         }
 
         private void PlayGame(object sender, EventArgs e)
         {
-            if (File.Exists($"{rustDirectory}/temp/winhttp.dll"))
-                File.Move($"{rustDirectory}/temp/winhttp.dll", $"{rustDirectory}/winhttp.dll");
-
-            WindowState = FormWindowState.Minimized;
-            ShowInTaskbar = false;
-            notifyIcon.Visible = true;
-
-            using (Process proc = Process.Start($"{rustDirectory}/RustClient.exe", GetStartupParamaters()))
+            if (launchVanilla)
             {
-                proc.WaitForExit();
-                WindowState = FormWindowState.Normal;
-                ShowInTaskbar = true;
-                notifyIcon.Visible = false;
-                File.Move($"{rustDirectory}/winhttp.dll", $"{rustDirectory}/temp/winhttp.dll");
+                Process.Start($"{rustDirectory}/{"Rust.exe"}");
+                return;
+            }
+            else
+            {
+                WindowState = FormWindowState.Minimized;
+                ShowInTaskbar = false;
+                notifyIcon.Visible = true;
+
+                using (Process proc = Process.Start($"{rustDirectory}/{(launchVanilla ? "Rust.exe" : "RustClient.exe")}", GetStartupParamaters()))
+                {
+                    proc.WaitForExit();
+                    WindowState = FormWindowState.Normal;
+                    ShowInTaskbar = true;
+                    notifyIcon.Visible = false;
+
+                    if (!launchVanilla)
+                        File.Move($"{rustDirectory}/winhttp.dll", $"{rustDirectory}/temp/winhttp.dll");
+                }
             }
         }
         private void UpdateGame(object sender, EventArgs e)
@@ -417,13 +406,7 @@ namespace Carbon.Launcher.GUI
         }
 
         private void DevblogButton_Click(object sender, EventArgs e) => Process.Start(new ProcessStartInfo(devblog.link));
-        private void ExitButton_Click(object sender, EventArgs e)
-        {
-            if (File.Exists($"{rustDirectory}/winhttp.dll"))
-                File.Move($"{rustDirectory}/winhttp.dll", $"{rustDirectory}/temp/winhttp.dll");
-
-            Application.Exit();
-        }
+        private void ExitButton_Click(object sender, EventArgs e) => Application.Exit();
 
         private void SettingsButton_MouseEnter(object sender, EventArgs e)
         {
@@ -475,46 +458,24 @@ namespace Carbon.Launcher.GUI
 
         private void rustBtn_Click(object sender, EventArgs e)
         {
-	        ToggleRustCarbonBtn(true);
+            ToggleRustCarbonBtn(true);
+            launchVanilla = true;
+            UpdatePlayButton(PlayState.PlayGame);
         }
 
         private void carbonBtn_Click(object sender, EventArgs e)
         {
-	        ToggleRustCarbonBtn(false);
+            ToggleRustCarbonBtn(false);
+            launchVanilla = false;
+            CheckForCarbonUpdate();
         }
 
         private void ToggleRustCarbonBtn(bool rust)
         {
-	        carbonBtn.BackColor = rust ? Color.FromArgb(50, 47, 32) : Color.FromArgb(150, 47, 32);
-	        carbonBtn.ForeColor = rust ? Color.DimGray : Color.FromArgb(199, 152, 151);
-
-	        rustBtn.BackColor = !rust ? Color.FromArgb(50, 47, 32) : Color.FromArgb(150, 47, 32);
-	        rustBtn.ForeColor = !rust ? Color.DimGray : Color.FromArgb(199, 152, 151);
-
-	        DevblogTitlePanel.Visible = rust;
-	        DevblogDate.Visible = rust;
-	        DevblogButton.Visible = rust;
-	        DevblogDescriptionPanel.Visible = rust;
-	        newsPagination.Visible = rust;
-	        button1.Visible = button2.Visible = rust;
-	        browserSearchTxt.Visible = !rust;
-	        searchLabel.Visible = !rust;
-
-	        browserList.Visible = !rust;
-        }
-
-        private void browserList_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-	        if (browserList.SelectedItems.Count == 0)
-	        {
-		        SelectedServer = default;
-		        return;
-	        }
-
-	        SelectedServer = Steam.Cache.FirstOrDefault(x => x.Name == browserList.SelectedItems[0].SubItems[1].Text);
-
-	        // MessageBox.Show($"{SelectedServer.Address}:{SelectedServer.ConnectionPort}");
-	        PlayGame(null, null);
+            carbonBtn.BackColor = rust ? ColorTranslator.FromHtml("#962f20") : ColorTranslator.FromHtml("#3d4b27");
+            carbonBtn.ForeColor = rust ? ColorTranslator.FromHtml("#c79897") : ColorTranslator.FromHtml("#a6cd63");
+            rustBtn.BackColor = !rust ? ColorTranslator.FromHtml("#962f20") : ColorTranslator.FromHtml("#3d4b27");
+            rustBtn.ForeColor = !rust ? ColorTranslator.FromHtml("#c79897") : ColorTranslator.FromHtml("#a6cd63");
         }
     }
 }
