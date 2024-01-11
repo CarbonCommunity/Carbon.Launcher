@@ -13,6 +13,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using Steamworks.Data;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 
@@ -27,6 +28,8 @@ namespace Carbon.Launcher.GUI
         public Item devblog => devblogs.ElementAt(devblogIndex);
         public IEnumerable<Item> devblogs;
         public Dictionary<string, Image> cachedImages = new();
+
+        public ServerInfo SelectedServer;
 
         public enum PlayState
         {
@@ -108,6 +111,54 @@ namespace Carbon.Launcher.GUI
             }
 
             VersionNumber.Text = $"v{currentVersion}";
+
+            ToggleRustCarbonBtn(false);
+
+            Steam.Init();
+
+            var items = new string[]
+            {
+	            string.Empty,
+	            @"Downloading server information"
+            };
+
+            browserList.Items.Clear();
+            browserList.Items.Add(new ListViewItem(items));
+
+            Steam.RefreshInfo(null, () =>
+            {
+	            RefreshBrowserList(browserList.Text);
+            });
+
+            browserSearchTxt.TextChanged += (sender, args) =>
+            {
+	            RefreshBrowserList(browserSearchTxt.Text);
+            };
+
+            void RefreshBrowserList(string filter)
+            {
+	            filter = filter.ToLower().Trim();
+
+	            browserList.Items.Clear();
+
+	            foreach (var info in Steam.Cache.OrderByDescending(x => x.Players))
+	            {
+		            if (!string.IsNullOrEmpty(filter) && !(info.Name.ToLower().Contains(filter)))
+		            {
+						continue;
+		            }
+
+		            var items = new string[]
+		            {
+			            string.Empty,
+			            $"{info.Name}",
+			            $"{info.Players:n0} / {info.MaxPlayers:n0}",
+			            $"{info.Ping:0}ms"
+		            };
+
+		            browserList.Items.Add(new ListViewItem(items));
+	            }
+            }
         }
 
         public bool IsRustDir(string dir)
@@ -163,14 +214,18 @@ namespace Carbon.Launcher.GUI
             if ((bool)Settings.Default["SkipWarmup"])
                 startupParams += "+prewarm \"false\" +global.skipassetwarmup_crashes \"1\" ";
 
-            if ((bool)Settings.Default["LogFile"])
-                startupParams += "-logfile output_log.txt ";
-
             if ((bool)Settings.Default["DisableGibs"])
                 startupParams += "+effects.maxgibs \"-1\" ";
 
-            if ((string)Settings.Default["ConnectIP"] != string.Empty)
-                startupParams += $"+connect \"{(string)Settings.Default["ConnectIP"]}\" ";
+            var ip = (!string.IsNullOrEmpty(SelectedServer.Name)
+	            ? $"{SelectedServer.Address}:{SelectedServer.ConnectionPort}"
+	            : Settings.Default["ConnectIP"])?.ToString();
+
+            if (!string.IsNullOrEmpty(ip))
+                startupParams += $"+connect \"{ip}\" ";
+
+            if ((bool)Settings.Default["LogFile"])
+	            startupParams += "-logfile output_log.txt ";
 
             return startupParams;
         }
@@ -416,6 +471,50 @@ namespace Carbon.Launcher.GUI
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
+        }
+
+        private void rustBtn_Click(object sender, EventArgs e)
+        {
+	        ToggleRustCarbonBtn(true);
+        }
+
+        private void carbonBtn_Click(object sender, EventArgs e)
+        {
+	        ToggleRustCarbonBtn(false);
+        }
+
+        private void ToggleRustCarbonBtn(bool rust)
+        {
+	        carbonBtn.BackColor = rust ? Color.FromArgb(50, 47, 32) : Color.FromArgb(150, 47, 32);
+	        carbonBtn.ForeColor = rust ? Color.DimGray : Color.FromArgb(199, 152, 151);
+
+	        rustBtn.BackColor = !rust ? Color.FromArgb(50, 47, 32) : Color.FromArgb(150, 47, 32);
+	        rustBtn.ForeColor = !rust ? Color.DimGray : Color.FromArgb(199, 152, 151);
+
+	        DevblogTitlePanel.Visible = rust;
+	        DevblogDate.Visible = rust;
+	        DevblogButton.Visible = rust;
+	        DevblogDescriptionPanel.Visible = rust;
+	        newsPagination.Visible = rust;
+	        button1.Visible = button2.Visible = rust;
+	        browserSearchTxt.Visible = !rust;
+	        searchLabel.Visible = !rust;
+
+	        browserList.Visible = !rust;
+        }
+
+        private void browserList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+	        if (browserList.SelectedItems.Count == 0)
+	        {
+		        SelectedServer = default;
+		        return;
+	        }
+
+	        SelectedServer = Steam.Cache.FirstOrDefault(x => x.Name == browserList.SelectedItems[0].SubItems[1].Text);
+
+	        // MessageBox.Show($"{SelectedServer.Address}:{SelectedServer.ConnectionPort}");
+	        PlayGame(null, null);
         }
     }
 }
