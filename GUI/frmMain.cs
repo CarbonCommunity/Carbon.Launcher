@@ -221,19 +221,18 @@ namespace Carbon.Launcher.GUI
             }
             else
             {
+                File.Move($"{rustDirectory}/temp/winhttp.dll", $"{rustDirectory}/winhttp.dll");
                 WindowState = FormWindowState.Minimized;
                 ShowInTaskbar = false;
                 notifyIcon.Visible = true;
 
-                using (Process proc = Process.Start($"{rustDirectory}/{(launchVanilla ? "Rust.exe" : "RustClient.exe")}", GetStartupParamaters()))
+                using (Process proc = Process.Start($"{rustDirectory}/RustClient.exe", GetStartupParamaters()))
                 {
                     proc.WaitForExit();
                     WindowState = FormWindowState.Normal;
                     ShowInTaskbar = true;
                     notifyIcon.Visible = false;
-
-                    if (!launchVanilla)
-                        File.Move($"{rustDirectory}/winhttp.dll", $"{rustDirectory}/temp/winhttp.dll");
+                    File.Move($"{rustDirectory}/winhttp.dll", $"{rustDirectory}/temp/winhttp.dll");
                 }
             }
         }
