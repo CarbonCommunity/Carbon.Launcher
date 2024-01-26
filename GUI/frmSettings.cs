@@ -1,7 +1,9 @@
 ﻿using Carbon.Launcher.Properties;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using static Carbon.Launcher.GUI.frmMain;
 
 namespace Carbon.Launcher.GUI
 {
@@ -43,10 +45,11 @@ namespace Carbon.Launcher.GUI
                     RustDirectory.Text = RustDirectoryDialog.SelectedPath;
                     rustDirectory = RustDirectoryDialog.SelectedPath;
 
-                    if (_parent.updateAvailable)
-                        _parent.UpdatePlayButton(frmMain.PlayState.UpdateGame);
+                    Process[] steamProcesses = Process.GetProcessesByName("steam");
+                    if (steamProcesses.Length == 0)
+                        _parent.UpdatePlayButton(PlayState.SteamNotRunning);
                     else
-                        _parent.UpdatePlayButton(frmMain.PlayState.PlayGame);
+                        _parent.RustDirectoryCheck();
                 }
                 else
                 {

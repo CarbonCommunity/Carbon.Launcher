@@ -152,6 +152,8 @@ namespace Carbon.Launcher.GUI
                     PlayButton.BackColor = Color.FromArgb(150, 47, 32);
                     PlayButton.Text = "CHECK STEAM";
                     PlayButton.Enabled = true;
+                    PlayButton.Click -= UpdateGame;
+                    PlayButton.Click -= PlayGame;
                     PlayButton.Click += CheckIfSteamOpen;
                     break;
 
@@ -173,6 +175,8 @@ namespace Carbon.Launcher.GUI
                     PlayButton.ForeColor = Color.FromArgb(72, 154, 212);
                     PlayButton.BackColor = Color.FromArgb(29, 66, 95);
                     PlayButton.Text = "UPDATE";
+                    PlayButton.Click -= CheckIfSteamOpen;
+                    PlayButton.Click -= PlayGame;
                     PlayButton.Click += UpdateGame;
                     PlayButton.Enabled = true;
                     break;
@@ -182,6 +186,8 @@ namespace Carbon.Launcher.GUI
                     PlayButton.BackColor = Color.FromArgb(115, 141, 69);
                     PlayButton.Text = "PLAY";
                     PlayButton.Enabled = true;
+                    PlayButton.Click -= CheckIfSteamOpen;
+                    PlayButton.Click -= UpdateGame;
                     PlayButton.Click += PlayGame;
                     break;
             }
@@ -221,7 +227,9 @@ namespace Carbon.Launcher.GUI
             }
             else
             {
-                File.Move($"{rustDirectory}/temp/winhttp.dll", $"{rustDirectory}/winhttp.dll");
+                if (File.Exists($"{rustDirectory}/temp/winhttp.dll"))
+                    File.Move($"{rustDirectory}/temp/winhttp.dll", $"{rustDirectory}/winhttp.dll");
+
                 WindowState = FormWindowState.Minimized;
                 ShowInTaskbar = false;
                 notifyIcon.Visible = true;
@@ -264,47 +272,53 @@ namespace Carbon.Launcher.GUI
         {
             var filesExtracted = 0;
             string zipLocation = $@"{rustDirectory}\Carbon.Client.Release.zip";
-            using (ZipArchive archive = await Task.Run(() => ZipFile.OpenRead(zipLocation)))
+            try
             {
-                int progress = 0;
-                foreach (ZipArchiveEntry file in archive.Entries)
+                using (ZipArchive archive = await Task.Run(() => ZipFile.OpenRead(zipLocation)))
                 {
-                    if (string.IsNullOrEmpty(file.Name) || string.IsNullOrEmpty(file.FullName)) continue;
-
-                    if (file.Name != file.FullName)
+                    int progress = 0;
+                    foreach (ZipArchiveEntry file in archive.Entries)
                     {
-                        string directory = file.FullName.Replace(file.Name, "");
-                        if (!Directory.Exists($@"{rustDirectory}\{directory}"))
-                            Directory.CreateDirectory($@"{rustDirectory}\{directory}");
+                        if (string.IsNullOrEmpty(file.Name) || string.IsNullOrEmpty(file.FullName)) continue;
+
+                        if (file.Name != file.FullName)
+                        {
+                            string directory = file.FullName.Replace(file.Name, "");
+                            if (!Directory.Exists($@"{rustDirectory}\{directory}"))
+                                Directory.CreateDirectory($@"{rustDirectory}\{directory}");
+                        }
+
+
+                        await Task.Run(() =>
+                        {
+                            file.ExtractToFile($@"{rustDirectory}\{file.FullName}", true);
+                            filesExtracted++;
+                            progress = Convert.ToInt32(100 * filesExtracted / archive.Entries.Count);
+                        });
+
+                        ProgressText.Text = $"Extracting {file.FullName}";
+                        ProgressPercent.Text = $"{progress}%";
+                        ProgressBar.Value = progress;
                     }
-
-
-                    await Task.Run(() =>
-                    {
-                        file.ExtractToFile($@"{rustDirectory}\{file.FullName}", true);
-                        filesExtracted++;
-                        progress = Convert.ToInt32(100 * filesExtracted / archive.Entries.Count);
-                    });
-
-                    ProgressText.Text = $"Extracting {file.FullName}";
-                    ProgressPercent.Text = $"{progress}%";
-                    ProgressBar.Value = progress;
                 }
+
+                // Delete the old DLL we moved on exit
+                if (File.Exists($"{rustDirectory}/temp/winhttp.dll"))
+                    File.Delete($"{rustDirectory}/temp/winhttp.dll");
+
+                // Delete the zip file we downloaded
+                if (File.Exists(zipLocation))
+                    File.Delete(zipLocation);
+
+                // Hide Progress Bar Panel
+                ProgressBarPanel.Visible = false;
+
+                // Make play button have the 'Play' Option
+                UpdatePlayButton(PlayState.PlayGame);
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
-
-            // Delete the old DLL we moved on exit
-            if (File.Exists($"{rustDirectory}/temp/winhttp.dll"))
-                File.Delete($"{rustDirectory}/temp/winhttp.dll");
-
-            // Delete the zip file we downloaded
-            if (File.Exists(zipLocation))
-                File.Delete(zipLocation);
-
-            // Hide Progress Bar Panel
-            ProgressBarPanel.Visible = false;
-
-            // Make play button have the 'Play' Option
-            UpdatePlayButton(PlayState.PlayGame);
         }
 
         private void GetNews()
